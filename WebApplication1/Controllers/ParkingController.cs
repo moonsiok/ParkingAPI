@@ -27,7 +27,7 @@ namespace WebApplication1.Controllers
             var car = await _context.parkings.FindAsync(id);
             if (car == null)
                 return BadRequest("Car is not found");
-            return Ok(cars);
+            return Ok(car);
         }
 
         [HttpPost]
