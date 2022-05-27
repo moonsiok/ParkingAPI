@@ -15,7 +15,7 @@ namespace WebApplication1.Controllers
             _context = context;
         }
 
-        [HttpGet, Authorize(Roles = "Admin")]
+        [HttpGet, Authorize] 
         public async Task<ActionResult<List<Parking>>> Get()
         {
             
