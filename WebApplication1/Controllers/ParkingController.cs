@@ -15,14 +15,14 @@ namespace WebApplication1.Controllers
             _context = context;
         }
 
-        [HttpGet, Authorize] 
+        [HttpGet, Authorize(Roles = "Admin")] 
         public async Task<ActionResult<List<Parking>>> Get()
         {
             
             return Ok(await _context.parkings.ToListAsync());
         }
 
-        [HttpGet("(id)"), Authorize]
+        [HttpGet("(id)"), Authorize(Roles ="Admin")]
         public async Task<ActionResult<Parking>> Get(int id)
         {
             var car = await _context.parkings.FindAsync(id);
