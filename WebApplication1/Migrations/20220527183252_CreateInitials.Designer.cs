@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApplication1.Data;
 
@@ -10,9 +11,10 @@ using WebApplication1.Data;
 namespace WebApplication1.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220527183252_CreateInitials")]
+    partial class CreateInitials
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,28 +23,6 @@ namespace WebApplication1.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("WebApplication1.Number", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("ParkingId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("fines")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParkingId")
-                        .IsUnique();
-
-                    b.ToTable("Number");
-                });
-
             modelBuilder.Entity("WebApplication1.Owner", b =>
                 {
                     b.Property<int>("Id")
@@ -50,6 +30,7 @@ namespace WebApplication1.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
 
                     b.Property<string>("name")
                         .IsRequired()
@@ -60,6 +41,7 @@ namespace WebApplication1.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
 
                     b.ToTable("Owners");
                 });
@@ -76,25 +58,19 @@ namespace WebApplication1.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OwnerId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Place")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
-
                     b.ToTable("parkings");
                 });
 
-            modelBuilder.Entity("WebApplication1.Number", b =>
+            modelBuilder.Entity("WebApplication1.Owner", b =>
                 {
                     b.HasOne("WebApplication1.Parking", "Parking")
-                        .WithOne("Number")
-                        .HasForeignKey("WebApplication1.Number", "ParkingId")
+                        .WithMany("Owners")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -103,24 +79,7 @@ namespace WebApplication1.Migrations
 
             modelBuilder.Entity("WebApplication1.Parking", b =>
                 {
-                    b.HasOne("WebApplication1.Owner", "Owner")
-                        .WithMany("Parkings")
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("WebApplication1.Owner", b =>
-                {
-                    b.Navigation("Parkings");
-                });
-
-            modelBuilder.Entity("WebApplication1.Parking", b =>
-                {
-                    b.Navigation("Number")
-                        .IsRequired();
+                    b.Navigation("Owners");
                 });
 #pragma warning restore 612, 618
         }

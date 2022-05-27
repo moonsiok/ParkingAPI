@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 
+
 namespace WebApplication1.Controllers
 {
     [Route("api/[Controller]")]
@@ -15,28 +16,50 @@ namespace WebApplication1.Controllers
             _context = context;
         }
 
-        [HttpGet, Authorize(Roles = "Admin")] 
+        [HttpGet] 
         public async Task<ActionResult<List<Parking>>> Get()
         {
             
             return Ok(await _context.parkings.ToListAsync());
         }
 
-        [HttpGet("(id)"), Authorize(Roles ="Admin")]
-        public async Task<ActionResult<Parking>> Get(int id)
-        {
-            var car = await _context.parkings.FindAsync(id);
-            if (car == null)
-                return BadRequest("Car is not found");
-            return Ok(car);
-        }
+        [HttpGet("(id)")]
+        //public async Task<ActionResult<Parking>> Get(int id)
+        //{
+        //    var car = await _context.parkings.FindAsync(id);
+        //    if (car == null)
+        //        return BadRequest("Car is not found");
+        //    return Ok(car);
+        //}
 
-        [HttpPost]
-        public async Task<ActionResult<List<Parking>>> AddCars(Parking car)
+        public async Task<ActionResult<List<Parking>>> Get(int ownerId)
         {
-            _context.parkings.Add(car);
+            var parkings = await _context.parkings
+                .Where(p => p.OwnerId == ownerId)
+                .Include(c=>c.Number)
+                .ToListAsync();
+            return parkings;
+        }
+        //, Authorize(Roles = "Admin")
+        [HttpPost]
+        public async Task<ActionResult<List<Parking>>> AddCars(CreateParking request)
+        {
+            //_context.parkings.Add(car);
+            //await _context.SaveChangesAsync();
+            //return Ok(await _context.parkings.ToListAsync());
+            var owner = await _context.Owners.FindAsync(request.OwnerId);
+            if (owner == null)
+                return NotFound();
+            var newParking = new Parking
+            {
+                Name = request.Name,
+                Place = request.Place,
+                Owner = owner
+            };
+            _context.parkings.Add(newParking);
             await _context.SaveChangesAsync();
-            return Ok(await _context.parkings.ToListAsync());
+            return await Get(newParking.OwnerId);
+
         }
 
         [HttpPut]
@@ -46,8 +69,6 @@ namespace WebApplication1.Controllers
             if (dbcar == null)
                 return BadRequest("Car is not found");
             dbcar.Name = request.Name;
-            dbcar.FirstName = request.FirstName;
-            dbcar.LastName = request.LastName;
             dbcar.Place = request.Place;
 
             await _context.SaveChangesAsync();
@@ -64,6 +85,22 @@ namespace WebApplication1.Controllers
             _context.parkings.Remove(dbcar);
             await _context.SaveChangesAsync();
             return Ok(await _context.parkings.ToListAsync());
+        }
+        [HttpPost("weapon")]
+        public async Task<ActionResult<Parking>> AddNumber(Addnumber request)
+        {
+
+            var parking = await _context.parkings.FindAsync(request.ParkingId);
+            if (parking == null)
+                return NotFound();
+            var newnumber = new Number
+            {
+                fines = request.fines,
+                Parking = parking
+            };
+            _context.Number.Add(newnumber);
+            await _context.SaveChangesAsync();
+            return parking;
         }
     }
 }

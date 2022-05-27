@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace ParkingAPI.Migrations
+namespace WebApplication1.Migrations
 {
     public partial class CreateInitial : Migration
     {

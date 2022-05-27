@@ -8,7 +8,7 @@ using WebApplication1.Data;
 
 #nullable disable
 
-namespace ParkingAPI.Migrations
+namespace WebApplication1.Migrations
 {
     [DbContext(typeof(DataContext))]
     [Migration("20220526173007_CreateInitial")]
@@ -31,13 +31,7 @@ namespace ParkingAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                   
 
                     b.Property<string>("Name")
                         .IsRequired()

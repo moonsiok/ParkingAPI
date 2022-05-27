@@ -22,7 +22,7 @@ builder.Services.AddSwaggerGen(options => {
     {
         Description = "Standard Authorization header using the Bearer Scheme (\"bearer {token}\")",
         In = ParameterLocation.Header,
-        Name = "Authorazation",
+        Name = "Authorization",
         Type = SecuritySchemeType.ApiKey
     });
 
